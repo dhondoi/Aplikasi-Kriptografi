@@ -1,0 +1,77 @@
+<div class="modal fade" id="modalLoading" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="./asset/img/loading.gif" alt="Loading">
+                <h1>Harap Tunggu...</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./asset/js/bootstrap.bundle.min.js"></script>
+<script>
+    (() => {
+        const modalLoading = new bootstrap.Modal(document.getElementById('modalLoading'));
+        const btnEnc = document.getElementById("btnEnc");
+        const btnDec = document.getElementById("btnDec");
+        const btnClr = document.getElementById("btnClr");
+        const btnCopy = document.getElementById("btnCopy");
+        const data = document.getElementById("data");
+        
+        btnEnc.addEventListener("click", encData);        
+        btnDec.addEventListener("click", decData);        
+        btnClr.addEventListener("click", clearForm);
+        btnCopy.addEventListener("click", copyData);
+
+function copyData() {
+  data.select();
+    document.execCommand('copy');
+}
+
+        function encData() {
+          const dataIn = { submit: "encrypt",dataEnc:data.value };
+
+fetch('kripto/', {
+  method: 'POST', // or 'PUT'
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(dataIn),
+})
+.then(response => response.json())
+.then(dataRes => {
+  data.value = dataRes.success;
+})
+.catch((error) => {
+  console.error('Error:', error);
+});
+}
+        function decData() {
+          const dataIn = { submit: "decrypt",dataDec:data.value };
+
+fetch('kripto/', {
+  method: 'POST', // or 'PUT'
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(dataIn),
+})
+.then(response => response.json())
+.then(dataRes => {
+  data.value = dataRes.success;
+})
+.catch((error) => {
+  console.error('Error:', error);
+});
+}
+
+        function clearForm() {
+          data.value = "";
+          data.focus();
+        }
+
+    })();
+</script>
+</body>
+</html>

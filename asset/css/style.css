@@ -1,0 +1,7 @@
+@font-face {
+    font-family: "Acme";
+    src: url("../font/Acme-Regular.ttf") format("truetype");
+  }
+  body {
+    font-family: "Acme", sans-serif;
+  }
