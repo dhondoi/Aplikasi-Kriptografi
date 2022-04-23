@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center">
-                <img src="./asset/img/loading.gif" alt="Loading">
+                <img src="./asset/img/loading.gif" alt="Loading" class="img-fluid">
                 <h1>Harap Tunggu...</h1>
             </div>
         </div>
@@ -18,53 +18,51 @@
         const btnClr = document.getElementById("btnClr");
         const btnCopy = document.getElementById("btnCopy");
         const data = document.getElementById("data");
+        let IDTemp;
         
-        btnEnc.addEventListener("click", encData);        
-        btnDec.addEventListener("click", decData);        
         btnClr.addEventListener("click", clearForm);
         btnCopy.addEventListener("click", copyData);
+        document.getElementById('modalLoading').addEventListener("shown.bs.modal",getResultData);
+        btnEnc.addEventListener("click", function(){
+          IDTemp = this.id;
+          modalLoading.show();
+        });        
+        btnDec.addEventListener("click", function(){
+          IDTemp = this.id;
+          modalLoading.show();
+        });        
 
-function copyData() {
-  data.select();
-    document.execCommand('copy');
-}
+        function getResultData() {          
+          let dataIn = null;
 
-        function encData() {
-          const dataIn = { submit: "encrypt",dataEnc:data.value };
+          if (IDTemp == "btnEnc") {
+            dataIn = { submit: "encrypt",dataEnc:data.value };
+          } else if (IDTemp == "btnDec"){
+            dataIn = { submit: "decrypt",dataDec:data.value };
+          }
 
-fetch('kripto/', {
-  method: 'POST', // or 'PUT'
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(dataIn),
-})
-.then(response => response.json())
-.then(dataRes => {
-  data.value = dataRes.success;
-})
-.catch((error) => {
-  console.error('Error:', error);
-});
-}
-        function decData() {
-          const dataIn = { submit: "decrypt",dataDec:data.value };
+          fetch('kripto/', {
+            method: 'POST', // or 'PUT'
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataIn),
+          })
+          .then(response => response.json())
+          .then(dataRes => {
+            modalLoading.hide();
+            data.value = dataRes.success;
+          })
+          .catch((error) => {
+            modalLoading.hide();
+            console.log('Error:', error);
+          });
+        }
 
-fetch('kripto/', {
-  method: 'POST', // or 'PUT'
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(dataIn),
-})
-.then(response => response.json())
-.then(dataRes => {
-  data.value = dataRes.success;
-})
-.catch((error) => {
-  console.error('Error:', error);
-});
-}
+        function copyData() {
+          data.select();
+          document.execCommand('copy');
+        }
 
         function clearForm() {
           data.value = "";
